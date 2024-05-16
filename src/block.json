@@ -1,0 +1,20 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "fsd/property-meta-details",
+	"version": "0.1.0",
+	"title": "Property Meta Details",
+	"category": "text",
+	"icon": "smiley",
+	"description": "Meta details block for properties",
+	"example": {},
+	"supports": {
+		"html": false,
+		"multiple": false
+	},
+	"textdomain": "property-meta-details",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"render": "file:./render.php"
+}

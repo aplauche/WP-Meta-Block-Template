@@ -1,0 +1,22 @@
+/**
+ * The following styles get applied both on the front of your site
+ * and in the editor.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+
+.wp-block-fsd-property-meta-details {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  box-shadow: 0px 2px 6px rgb(0, 0, 0, 0.15);
+  border-radius: 12px;
+  padding: 1.5rem;
+  gap: 2rem;
+
+  & > div {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}
