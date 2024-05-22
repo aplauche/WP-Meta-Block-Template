@@ -9,7 +9,7 @@
  * Author:            The WordPress Contributors
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       fsdwmbt
+ * Text Domain:       fsd
  *
  * @package CreateBlock
  */
@@ -17,9 +17,6 @@
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
-
-$PLUGIN_URL = plugin_dir_url(__FILE__);
-$PLUGIN_PATH = plugin_dir_path(__FILE__);
 
 /**
  * Registers the block using the metadata loaded from the `block.json` file.
@@ -34,6 +31,49 @@ function fsd_register_meta_block()
 }
 add_action('init', 'fsd_register_meta_block');
 
+/**
+ * Loads the asset file for the given script or style.
+ * Returns a default if the asset file is not found.
+ */
+function fsd_get_asset_file( $filepath ) {
+
+  $PLUGIN_PATH = plugin_dir_path(__FILE__);
+
+	$asset_path = $PLUGIN_PATH . $filepath . '.asset.php';
+
+	return file_exists( $asset_path )
+		? include $asset_path
+		: array(
+			'dependencies' => array(),
+			'version'      => microtime(),
+		);
+}
+
+/**
+ * Enqueue plugin specific editor scripts
+ */
+function fsd_enqueue_editor_scripts() {
+
+  $PLUGIN_URL = plugin_dir_url(__FILE__);
+
+	$asset_file = fsd_get_asset_file( 'build/editor' );
+
+	wp_enqueue_script(
+		'fsd-meta-custom-editor',
+		$PLUGIN_URL . 'build/editor.js',
+		[...$asset_file['dependencies'], 'wp-edit-post'],
+		$asset_file['version']
+	);
+
+  // Add custom data as a variable in JS
+  wp_localize_script( 'fsd-meta-custom-editor', 'postData',
+      array( 
+        'postType' => get_post_type( get_the_id() ),
+        'postId' => get_the_id(),
+      )
+  );
+}
+add_action( 'enqueue_block_editor_assets', 'fsd_enqueue_editor_scripts' );
+
 
 include_once(plugin_dir_path(__FILE__) . 'includes/register-post-type.php');
-include_once(plugin_dir_path(__FILE__) . 'includes/editor-modifications.php');

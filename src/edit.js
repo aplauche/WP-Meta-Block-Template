@@ -1,54 +1,29 @@
-/**
- * Retrieves the translation of text.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-i18n/
- */
-import { __ } from '@wordpress/i18n';
-
-/**
- * React hook that is used to mark the block wrapper element.
- * It provides all the necessary props like the class name.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
- */
 import { useBlockProps } from '@wordpress/block-editor';
 
-import { TextControl } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
 import { useEntityProp } from '@wordpress/core-data';
 import { RangeControl, __experimentalInputControl as InputControl } from '@wordpress/components';
 
-/**
- * Lets webpack process CSS, SASS or SCSS files referenced in JavaScript files.
- * Those files can contain any CSS code that gets applied to the editor.
- *
- * @see https://www.npmjs.com/package/@wordpress/scripts#using-css
- */
 import './editor.scss';
 
-/**
- * The edit function describes the structure of your block in the context of the
- * editor. This represents what the editor will render when the block is used.
- *
- * @see https://developer.wordpress.org/block-editor/reference-guides/block-api/block-edit-save/#edit
- *
- * @return {Element} Element to render.
- */
+
 export default function Edit() {
+
+	// Attributes for the block wrapper
 	const blockProps = useBlockProps()
 
+	// Determine the curent post type in the editor context
 	const currentPostType =  useSelect((select) => {
 		return select('core/editor').getCurrentPostType()
 	}, [])
 
+	// Fetch the meta as an object and the setMeta function
 	const [meta, setMeta] = useEntityProp('postType', currentPostType, 'meta');
 
-	const bedrooms = meta.bedrooms;
-	const bathrooms = meta.bathrooms;
-	const price = meta.price;
-	const squareFootage = meta.squareFootage;
+	// Destructure all our individual properties from the meta for ease of use
+	const {bedrooms, bathrooms, price, squareFootage} = meta
 
-
+	// Flexible helper for setting a single meta value w/o mutating state
 	const updateMeta = ( key, value ) => {
 		setMeta( { ...meta, [key]: value } );
 	};
@@ -61,18 +36,18 @@ export default function Edit() {
 				<RangeControl
             label="Bedrooms"
             value={ bedrooms }
-            onChange={ ( value ) => updateMeta("bedrooms", value) }
+            onChange={ ( nextValue ) => updateMeta("bedrooms", nextValue) }
             min={ 0 }
             max={ 10 }
-						step={0.5}
+						step={1}
         />
 				<RangeControl
             label="Bathrooms"
             value={ bathrooms }
-            onChange={ ( value ) => updateMeta("bathrooms", value) }
+            onChange={ ( nextValue ) => updateMeta("bathrooms", nextValue) }
             min={ 0 }
             max={ 10 }
-						step={0.5}
+						step={0.5} // Half baths
         />
 				<InputControl
 					prefix="$"

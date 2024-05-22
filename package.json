@@ -13,7 +13,8 @@
 		"packages-update": "wp-scripts packages-update",
 		"plugin-zip": "wp-scripts plugin-zip",
 		"start": "wp-scripts start --webpack-copy-php",
-		"env": "wp-env start"
+		"env:start": "wp-env start",
+		"env:stop": "wp-env stop"
 	},
 	"devDependencies": {
 		"@wordpress/env": "^9.9.0",
