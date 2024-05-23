@@ -39,8 +39,10 @@ function fsd_get_asset_file( $filepath ) {
 
   $PLUGIN_PATH = plugin_dir_path(__FILE__);
 
+	// grab the asset file
 	$asset_path = $PLUGIN_PATH . $filepath . '.asset.php';
 
+	// if missing for some reason, can define defaults
 	return file_exists( $asset_path )
 		? include $asset_path
 		: array(
@@ -56,20 +58,21 @@ function fsd_enqueue_editor_scripts() {
 
   $PLUGIN_URL = plugin_dir_url(__FILE__);
 
+	// get our asset file with dependencies / version
 	$asset_file = fsd_get_asset_file( 'build/editor' );
 
+	// enqueue the script
 	wp_enqueue_script(
 		'fsd-meta-custom-editor',
 		$PLUGIN_URL . 'build/editor.js',
-		[...$asset_file['dependencies'], 'wp-edit-post'],
+		[...$asset_file['dependencies'], 'wp-edit-post'], // I manually add wp-edit-post here as an extra safety to make sure our deregister happens AFTER any registration
 		$asset_file['version']
 	);
 
-  // Add custom data as a variable in JS
+  // Add Post Types custom data as a variable for our JS to reference
   wp_localize_script( 'fsd-meta-custom-editor', 'postData',
       array( 
         'postType' => get_post_type( get_the_id() ),
-        'postId' => get_the_id(),
       )
   );
 }
